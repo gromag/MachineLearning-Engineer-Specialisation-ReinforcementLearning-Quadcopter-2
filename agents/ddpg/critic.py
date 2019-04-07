@@ -26,12 +26,33 @@ class Critic:
         actions = layers.Input(shape=(self.action_size,), name='actions')
 
         # Add hidden layer(s) for state pathway
-        net_states = layers.Dense(units=32, activation='relu')(states)
-        net_states = layers.Dense(units=64, activation='relu')(net_states)
+        net_states = layers.Dense(units=32)(states)
+        net_states = layers.BatchNormalization()(net_states)
+        net_states = layers.Activation('relu')(net_states)
+        net_states = layers.Dropout(rate=0.3)(net_states)
+
+        net_states = layers.Dense(units=64)(net_states)
+        net_states = layers.BatchNormalization()(net_states)
+        net_states = layers.Activation('relu')(net_states)
+        net_states = layers.Dropout(rate=0.5)(net_states)
 
         # Add hidden layer(s) for action pathway
-        net_actions = layers.Dense(units=32, activation='relu')(actions)
+        net_actions = layers.Dense(units=32)(actions)
+        net_actions = layers.BatchNormalization()(net_actions)
+        net_actions = layers.Activation('relu')(net_actions)
+        net_actions = layers.Dropout(rate=0.3)(net_actions)
+
         net_actions = layers.Dense(units=64, activation='relu')(net_actions)
+        net_actions = layers.BatchNormalization()(net_actions)
+        net_actions = layers.Activation('relu')(net_actions)
+        net_actions = layers.Dropout(rate=0.5)(net_actions)
+
+        # net_states = layers.Dense(units=32, activation='relu')(states)
+        # net_states = layers.Dense(units=64, activation='relu')(net_states)
+
+        # # Add hidden layer(s) for action pathway
+        # net_actions = layers.Dense(units=32, activation='relu')(actions)
+        # net_actions = layers.Dense(units=64, activation='relu')(net_actions)        
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
@@ -41,7 +62,7 @@ class Critic:
 
         # Add more layers to the combined network if needed
 
-        # Add final output layer to prduce action values (Q values)
+        # Add final output layer to produce action values (Q values)
         Q_values = layers.Dense(units=1, name='q_values')(net)
 
         # Create Keras model
@@ -49,6 +70,7 @@ class Critic:
 
         # Define optimizer and compile model for training with built-in loss function
         optimizer = optimizers.Adam()
+
         self.model.compile(optimizer=optimizer, loss='mse')
 
         # Compute action gradients (derivative of Q values w.r.t. to actions)
