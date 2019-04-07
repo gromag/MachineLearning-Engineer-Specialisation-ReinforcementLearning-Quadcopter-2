@@ -29,20 +29,50 @@ class Actor:
         # Define input layer (states)
         states = layers.Input(shape=(self.state_size,), name='states')
         # Add hidden layers
-        net = layers.Dense(units=512)(states)
+        net = layers.Dense(units=32)(states)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
-        net = layers.Dropout(rate=0.2)(net)
+        # net = layers.Dropout(rate=0.2)(net)
 
-        net = layers.Dense(units=512)(net)
+        net = layers.Dense(units=64)(net)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
-        net = layers.Dropout(rate=0.2)(net)
+        # net = layers.Dropout(rate=0.2)(net)
 
-        net = layers.Dense(units=512)(net)
+        net = layers.Dense(units=32)(net)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
-        net = layers.Dropout(rate=0.2)(net)
+        # net = layers.Dropout(rate=0.2)(net)
+
+        net = layers.Dense(units=64)(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.Activation('relu')(net)
+        # net = layers.Dropout(rate=0.2)(net)
+
+        net = layers.Dense(units=32)(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.Activation('relu')(net)
+        # net = layers.Dropout(rate=0.2)(net)
+
+        net = layers.Dense(units=64)(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.Activation('relu')(net)
+        # net = layers.Dropout(rate=0.2)(net)
+
+        net = layers.Dense(units=32)(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.Activation('relu')(net)
+        # net = layers.Dropout(rate=0.2)(net)
+
+        net = layers.Dense(units=64)(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.Activation('relu')(net)
+        # net = layers.Dropout(rate=0.2)(net)
+
+        net = layers.Dense(units=32)(net)
+        net = layers.BatchNormalization()(net)
+        net = layers.Activation('relu')(net)
+        # net = layers.Dropout(rate=0.2)(net)        
 
         # net = layers.Dense(units=32, activation='relu')(states)
         # net = layers.BatchNormalization()(net)
@@ -76,4 +106,4 @@ class Actor:
         self.train_fn = K.function(
             inputs=[self.model.input, action_gradients, K.learning_phase()],
             outputs=[],
-            updates=updates_op)
+            updates=[updates_op])
