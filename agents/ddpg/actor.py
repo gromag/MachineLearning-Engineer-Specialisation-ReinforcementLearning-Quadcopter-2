@@ -29,17 +29,17 @@ class Actor:
         # Define input layer (states)
         states = layers.Input(shape=(self.state_size,), name='states')
         # Add hidden layers
-        net = layers.Dense(units=32)(states)
+        net = layers.Dense(units=128)(states)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
         net = layers.Dropout(rate=0.2)(net)
 
-        net = layers.Dense(units=64)(net)
+        net = layers.Dense(units=254)(net)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
         net = layers.Dropout(rate=0.2)(net)
 
-        net = layers.Dense(units=32)(net)
+        net = layers.Dense(units=128)(net)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
         net = layers.Dropout(rate=0.2)(net)
