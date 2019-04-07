@@ -40,17 +40,23 @@ class DDPG:
         self.gamma = 0.99  # discount factor
         self.tau = 0.01  # for soft update of target parameters
 
+        self.total_reward = 0
+
     def reset_episode(self):
         self.noise.reset()
         state = self.task.reset()
         self.last_state = state
         self.total_reward = 0.0
+        self.score = 0.0
+        self.count = 0
         return state
 
     def step(self, action, reward, next_state, done):
          # Save experience / reward
         self.memory.add(self.last_state, action, reward, next_state, done)
         self.total_reward += reward
+        self.count += 1
+        self.score = self.total_reward / float(self.count)
 
         # Learn, if enough samples are available in memory
         if len(self.memory) > self.batch_size:
@@ -86,11 +92,12 @@ class DDPG:
 
         # Train actor model (local)
         action_gradients = np.reshape(self.critic_local.get_action_gradients([states, actions, 0]), (-1, self.action_size))
+
         self.actor_local.train_fn([states, action_gradients, 1])  # custom training function
 
         # Soft-update target models
         self.soft_update(self.critic_local.model, self.critic_target.model)
-        self.soft_update(self.actor_local.model, self.actor_target.model)   
+        self.soft_update(self.actor_local.model, self.actor_target.model)
 
     def soft_update(self, local_model, target_model):
         """Soft update model parameters."""
