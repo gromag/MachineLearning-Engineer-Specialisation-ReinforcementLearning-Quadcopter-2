@@ -1,10 +1,12 @@
 from keras import layers, models, optimizers
 from keras import backend as K
+from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D
+
 
 class Actor:
     """Actor (Policy) Model."""
 
-    def __init__(self, state_size, action_size, action_low, action_high):
+    def __init__(self, state_size, action_size, action_low, action_high, nn_architecture = [32, 64]):
         """Initialize parameters and build model.
 
         Params
@@ -13,12 +15,14 @@ class Actor:
             action_size (int): Dimension of each action
             action_low (array): Min value of each action dimension
             action_high (array): Max value of each action dimension
+            nn_architecture (list): Hidden layers sizes, e.g. [32, 64] will create two hidden layers with 32 and 64 units
         """
         self.state_size = state_size
         self.action_size = action_size
         self.action_low = action_low
         self.action_high = action_high
         self.action_range = self.action_high - self.action_low
+        self.nn_architecture = nn_architecture
 
         # Initialize any other variables here
 
@@ -29,76 +33,15 @@ class Actor:
         # Define input layer (states)
         states = layers.Input(shape=(self.state_size,), name='states')
         # Add hidden layers
-        net = layers.Dense(units=32)(states)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
 
-        net = layers.Dense(units=64)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
+        net = states
 
-        net = layers.Dense(units=32)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
+        for size in self.nn_architecture:
+            net = layers.Dense(units=size)(net)
+            net = layers.BatchNormalization()(net)
+            net = layers.Activation('relu')(net)
+            # net = layers.Dropout(rate=0.2)(net)
 
-        net = layers.Dense(units=64)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=32)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=64)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=32)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=64)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=32)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=64)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=32)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)  
-
-        net = layers.Dense(units=64)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)
-
-        net = layers.Dense(units=32)(net)
-        net = layers.BatchNormalization()(net)
-        net = layers.Activation('relu')(net)
-        # net = layers.Dropout(rate=0.2)(net)  
-
-        # net = layers.Dense(units=32, activation='relu')(states)
-        # net = layers.BatchNormalization()(net)
-        # net = layers.Dense(units=64, activation='relu')(net)
-        # net = layers.BatchNormalization()(net)
-        # net = layers.Dense(units=32, activation='relu')(net)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 

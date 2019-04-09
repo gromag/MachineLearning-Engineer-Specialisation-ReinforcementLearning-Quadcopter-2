@@ -4,16 +4,20 @@ from keras import backend as K
 class Critic:
     """Critic (Value) Model."""
 
-    def __init__(self, state_size, action_size):
+    def __init__(self, state_size, action_size, nn_architecture = [32, 64]):
         """Initialize parameters and build model.
 
         Params
         ======
             state_size (int): Dimension of each state
             action_size (int): Dimension of each action
+            nn_architecture (list): Hidden layers sizes, e.g. [[32, 64],[32,64]] 
+                will create two hidden layers with 32 and 64 units for actions 
+                and states pathways
         """
         self.state_size = state_size
         self.action_size = action_size
+        self.nn_architecture = nn_architecture
 
         # Initialize any other variables here
 
@@ -25,71 +29,23 @@ class Critic:
         states = layers.Input(shape=(self.state_size,), name='states')
         actions = layers.Input(shape=(self.action_size,), name='actions')
 
-        # Add hidden layer(s) for state pathway
-        net_states = layers.Dense(units=32)(states)
-        net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Activation('relu')(net_states)
-        # net_states = layers.Dropout(rate=0.3)(net_states)
+        net_states = states
+        net_actions = actions
+        
+        for size in self.nn_architecture:
+            # Add hidden layer(s) for state pathway
+            net_states = layers.Dense(units=size)(net_states)
+            net_states = layers.BatchNormalization()(net_states)
+            net_states = layers.Activation('relu')(net_states)
+            # net_states = layers.Dropout(rate=0.3)(net_states)
 
-        net_states = layers.Dense(units=64)(net_states)
-        net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Activation('relu')(net_states)
-        # net_states = layers.Dropout(rate=0.5)(net_states)
+        for size in self.nn_architecture:
+            # Add hidden layer(s) for action pathway
+            net_actions = layers.Dense(units=size)(net_actions)
+            net_actions = layers.BatchNormalization()(net_actions)
+            net_actions = layers.Activation('relu')(net_actions)
+            # net_actions = layers.Dropout(rate=0.3)(net_actions)
 
-        # Add hidden layer(s) for state pathway
-        net_states = layers.Dense(units=32)(net_states)
-        net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Activation('relu')(net_states)
-        # net_states = layers.Dropout(rate=0.3)(net_states)
-
-        net_states = layers.Dense(units=64)(net_states)
-        net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Activation('relu')(net_states)
-        # net_states = layers.Dropout(rate=0.5)(net_states)
-
-        # Add hidden layer(s) for state pathway
-        net_states = layers.Dense(units=32)(net_states)
-        net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Activation('relu')(net_states)
-        # net_states = layers.Dropout(rate=0.3)(net_states)
-
-        net_states = layers.Dense(units=64)(net_states)
-        net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Activation('relu')(net_states)
-        # net_states = layers.Dropout(rate=0.5)(net_states)   
-
-        # Add hidden layer(s) for action pathway
-        net_actions = layers.Dense(units=32)(actions)
-        net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Activation('relu')(net_actions)
-        # net_actions = layers.Dropout(rate=0.3)(net_actions)
-
-        net_actions = layers.Dense(units=64)(net_actions)
-        net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Activation('relu')(net_actions)
-        # net_actions = layers.Dropout(rate=0.5)(net_actions)
-
-        # Add hidden layer(s) for action pathway
-        net_actions = layers.Dense(units=32)(net_actions)
-        net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Activation('relu')(net_actions)
-        # net_actions = layers.Dropout(rate=0.3)(net_actions)
-
-        net_actions = layers.Dense(units=64)(net_actions)
-        net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Activation('relu')(net_actions)
-        # net_actions = layers.Dropout(rate=0.5)(net_actions)
-
-        # Add hidden layer(s) for action pathway
-        net_actions = layers.Dense(units=32)(net_actions)
-        net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Activation('relu')(net_actions)
-        # net_actions = layers.Dropout(rate=0.3)(net_actions)
-
-        net_actions = layers.Dense(units=64)(net_actions)
-        net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Activation('relu')(net_actions)
-        # net_actions = layers.Dropout(rate=0.5)(net_actions)
 
         # net_states = layers.Dense(units=32, activation='relu')(states)
         # net_states = layers.Dense(units=64, activation='relu')(net_states)

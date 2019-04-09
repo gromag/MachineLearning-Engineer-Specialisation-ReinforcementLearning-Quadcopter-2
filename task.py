@@ -21,7 +21,9 @@ class Task():
         self.position_size = 3
         self.euler_angle_size = 3
         # each action is repeater 3 times, the state or pose is composed of [x, y, z, alpha, beta, gamma]
-        self.state_size = self.action_repeat * (self.position_size + self.euler_angle_size)
+        # self.state_size = self.action_repeat * (self.position_size + self.euler_angle_size)
+        self.state_size = (self.position_size + self.euler_angle_size)
+
         self.action_low = 0
         self.action_high = 900
         self.action_size = 4
@@ -43,7 +45,7 @@ class Task():
         distance_tbefore = np.sqrt(((previous_pose[:3] - self.target_pos)**2).sum())
 
         # boost reward when near goal
-        step_point = 10 if distance_tbefore > 1 else 100
+        step_point = 1000
 
         # advancement towards target relative to previous state (distance) normalised by the initial distance
         # if quad moves towards the target this value is positive, otherwise it is negative
@@ -51,7 +53,7 @@ class Task():
 
         reward = step_point * proportion_advancement
 
-        return reward
+        return reward if reward > 0 else 0
     
 
     def step(self, rotor_speeds):
@@ -71,9 +73,10 @@ class Task():
             # if(done):
             #     break
 
-        next_state = np.concatenate(pose_all[1:])
+        # next_state = np.concatenate(pose_all[1:])
+        next_state = pose_all[-1]
 
-        relative_reward = np.sum(rewards)
+        relative_reward = np.mean(rewards)
 
         # print(relative_reward)
 
@@ -82,5 +85,6 @@ class Task():
     def reset(self):
         """Reset the sim to start a new episode."""
         self.sim.reset()
-        state = np.concatenate([self.sim.pose] * self.action_repeat) 
+        # state = np.concatenate([self.sim.pose] * self.action_repeat) 
+        state = self.sim.pose
         return state
