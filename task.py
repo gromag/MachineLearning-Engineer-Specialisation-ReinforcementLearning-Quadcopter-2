@@ -31,20 +31,12 @@ class Task():
         # Goal
         self.target_pos = target_pos if target_pos is not None else np.array([0., 0., 10.]) 
 
-    def get_reward(self):
-        """Uses current pose of sim to return reward."""
-        # reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
-        reward = 10. - 0.3 * np.sqrt(((self.sim.pose[:3] - self.target_pos)**2).sum())
-        # return reward
-
-        return reward
     
     def get_directional_reward(self, previous_pose):
         """Uses current pose of sim to return reward."""
         distance_tnow = np.sqrt(((self.sim.pose[:3] - self.target_pos)**2).sum())
         distance_tbefore = np.sqrt(((previous_pose[:3] - self.target_pos)**2).sum())
 
-        # boost reward when near goal
         step_point = 1000
 
         # advancement towards target relative to previous state (distance) normalised by the initial distance
